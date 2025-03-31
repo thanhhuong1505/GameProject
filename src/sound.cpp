@@ -3,11 +3,33 @@
 #include <iostream>
 #include <string>
 
-bool sound::init()
+bool sound::init(int soundSetId)
 {
-    string breath_path = "data/sound/sfx_breath.wav";
-    string hit_path = "data/sound/sfx_bonk.wav";
+    string breath_path, hit_path;
     string sound_path = "data/image/sound.png";
+
+    // chọn bộ âm thanh dựa trên soundSetId
+    switch(soundSetId)
+    {
+        case 0: // Shiba
+             breath_path = "data/sound/sfx_breath.wav";
+             hit_path = "data/sound/sfx_bonk.wav";
+             break;
+        case 1: // Pinkbird
+            breath_path = "data/sound/sfx_pinkbird_breath.wav";
+            hit_path = "data/sound/sfx_pinkbird_bonk.wav";
+            break;
+        case 2: // Yellowbird
+             breath_path = "data/sound/sfx_yellowbird_breath.wav";
+             hit_path = "data/sound/sfx_yellowbird_bonk.wav";
+             break;
+        default:
+             breath_path = "data/sound/sfx_breath.wav";
+             hit_path = "data/sound/sfx_bonk.wav";
+             break;
+    }
+
+    currentSoundSet = soundSetId;
 
     bool success = true;
 

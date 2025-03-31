@@ -13,33 +13,115 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+
     Uint32 frameStart;
     short int frameTime;
     game g;
-    bool isMenu = 0;
-    bool isPause = 0;
-    bool isSound = 1;
-    bool isDark = 0;
-
-    while(!g.isQuit())
+    bool isMainMenu = true; // trạng thái menu chính
+    bool isMenu = false;
+    bool isPause = false;
+    bool isSound = true;
+    bool isDark = false;
+    bool isCharacterSelection = false ; // bắt đầu từ menu chính, không phải chọn nhân vật
+    bool isSoundSelection = false; // trạng thái chọn âm thanh
+    
+    while (!g.isQuit())
     {
         frameStart = SDL_GetTicks();
+        
 
-        if (g.isDie())
+        if (isMainMenu)
+        {
+            g.takeInput();
+            g.renderMainMenu();
+            int selection = g.checkMainMenu();
+
+            if (g.userInput.Type == game::input::PLAY)
+            {
+                if (selection == 0) // Play
+                {
+                    
+                    isMainMenu = false; // không vào chọn nhân vật, vào game luôn
+                    
+                    g.userInput.Type = game::input::NONE;
+                }
+                else if (selection == 1) // Settings
+                {
+                    isMainMenu = false;
+                    isCharacterSelection = true; // chuyển sang chọn nhân vật
+                    g.userInput.Type = game::input::NONE;
+                }
+                else if (selection == 2) // Exit
+                {
+                    g.setQuit(true); // thoát game ngay lập tức
+                }
+            }
+            
+            g.display();
+        }
+
+        else if (isCharacterSelection)
+        {
+            g.takeInput();
+            g.renderCharacterSelection(); // hiển thị màn hình chọn nhân vật
+            SDL_Color textColor = {255, 255, 255, 255}; // Màu trắng
+            g.renderText("Select Your Character", 50, 50, textColor); // Hiển thị chữ hướng dẫn
+            int selection = g.checkCharacterSelection();
+
+            if (g.userInput.Type == game::input::PLAY)
+            {
+                if (selection >= 0) g.setSelectedCharacter(selection); // Sử dụng setter
+                if (selection == -1) // Nút Start được nhấn
+                {
+                    
+                    isCharacterSelection = false;
+                    isSoundSelection = true; // chuyển sang màn hình chọn âm thanh
+                    g.shiba.init(g.getSelectedCharacter(), isDark); // Sử dụng getter
+                    g.userInput.Type = game::input::NONE;
+                }
+            }
+            g.display();
+        }
+        else if (isSoundSelection){
+            g.takeInput();
+            g.renderSoundSelection(); // hiển thị màn hình chọn âm thanh
+            
+            SDL_Color textColor = {255, 255, 255, 255}; // Màu trắng
+            g.renderText("Select Sound Options", 50, 50, textColor); // Hiển thị chữ hướng dẫn
+            int selection = g.checkSoundSelection();
+
+            if(g.userInput.Type == game::input::PLAY){
+                if(selection >= 0){
+                    g.setSelectedSoundset(selection);
+                    g.sound.playBreath(); // phát thử âm thanh
+                }
+                if(selection == -1)  // nút start được nhấn
+                {
+                    
+                    isSoundSelection = false;
+                    g.sound.Free(); // giải phóng âm thanh cũ
+                    g.sound.init(g.getSelectedSoundSet()); // tải bộ âm thanh mới
+                    g.userInput.Type = game::input::NONE;
+                }
+            }
+            g.display();
+        }
+        else if (g.isDie())
         {
             if (isMenu) {
                 g.sound.playHit();
                 g.shiba.render();
             }
             g.userInput.Type = game::input::NONE;
-            while(g.isDie() && !g.isQuit())
+            while (g.isDie() && !g.isQuit())
             {
                 g.takeInput();
-                if (isMenu == 1 && g.userInput.Type == game::input::PLAY)
+                if (isMenu && g.userInput.Type == game::input::PLAY)
                 {
                     if (g.checkReplay())
                     {
-                        isMenu = 0;
+                        
+                        isMenu = false;
                     }
                     g.userInput.Type = game::input::NONE;
                 }
@@ -60,13 +142,13 @@ int main(int argc, char** argv)
                 else
                 {
                     g.pipe.init();
-                    g.shiba.init(isDark);
+                    g.shiba.init(g.getSelectedCharacter(), isDark); // Sử dụng getter
                     g.shiba.render();
                     g.renderMessage();
                     if (g.userInput.Type == game::input::PLAY)
                     {
                         g.Restart();
-                        isMenu = 1;
+                        isMenu = true;
                         g.userInput.Type = game::input::NONE;
                     }
                     g.land.update();
@@ -92,7 +174,7 @@ int main(int argc, char** argv)
                 g.userInput.Type = game::input::NONE;
             }
 
-            if (!isDark) g.renderBackground();
+            if (!g.getIsDark()) g.renderBackground();
             else g.renderBackgroundNight();
             g.pipe.render();
             g.land.render();
@@ -104,6 +186,7 @@ int main(int argc, char** argv)
                 g.shiba.update(g.getPipeWidth(), g.getPipeHeight());
                 g.pipe.update();
                 g.land.update();
+                
                 g.pause();
             }
             else
@@ -114,13 +197,14 @@ int main(int argc, char** argv)
                 g.renderBestScore();
                 g.replay();
                 g.sound.renderSound();
-                if (!isDark) g.lightTheme(); else g.darkTheme();
+                if (!g.getIsDark()) g.lightTheme(); else g.darkTheme();
                 g.nextButton();
                 if (g.userInput.Type == game::input::PLAY)
                 {
                     if (g.checkReplay())
                     {
-                        isPause = 0;
+                        
+                        isPause = false;
                     }
                     else if (g.sound.checkSound())
                     {
@@ -128,16 +212,16 @@ int main(int argc, char** argv)
                     }
                     else if (g.changeTheme())
                     {
-                        isDark = abs(1 - isDark);
-                        g.shiba.init(isDark);
+                        g.setIsDark(abs(1 - g.getIsDark())); 
+                        g.shiba.init(g.getSelectedCharacter(), g.getIsDark()); // Sử dụng getter
                     }
                     g.userInput.Type = game::input::NONE;
                 }
             }
+            
             g.display();
         }
 
-        //Limit FPS
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime)
         {

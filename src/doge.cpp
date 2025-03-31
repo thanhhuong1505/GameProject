@@ -2,10 +2,28 @@
 #include <stdio.h>
 #include <iostream>
 
-bool doge::init(bool isDark)
+bool doge::init(int characterId, bool isDark)
 {
-    string shiba_path = "data/image/shiba.png";
-    if (isDark) shiba_path = "data/image/shiba-dark.png";
+    string shiba_path;
+    // chọn hình ảnh dựa trên characterId 
+    switch(characterId)
+    {
+        case 0:
+        shiba_path = isDark ? "data/image/shiba-dark.png" : "data/image/shiba.png";
+        break;
+        case 1:
+        shiba_path = isDark ? "data/image/pinkbird-dark.png" : "data/image/pinkbird.png";
+        break;
+        case 2:
+        shiba_path = isDark ? "data/image/yellowbird-dark.png" : "data/image/yellowbird.png";
+        break;
+        default:
+        shiba_path = isDark ? "data/image/shiba-dark.png" : "data/image/shiba.png";
+        break;
+    }
+
+    currentCharacter = characterId;
+    
     if (saved_path == shiba_path)
     {
         posDoge.getPos(75, SCREEN_HEIGHT / 2 - 10);

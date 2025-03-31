@@ -8,7 +8,7 @@ using namespace std;
 class doge:LTexture
 {
 public:
-    bool init(bool isDark);
+    bool init( int characterId, bool isDark); // thêm tham số characterId 
 
     void render();
 
@@ -27,4 +27,5 @@ private:
     short int ahead = 0;
     string saved_path = "";
     position posDoge;
+    int currentCharacter; // lưu nhân vật hiện tại
 };
