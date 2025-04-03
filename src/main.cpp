@@ -118,7 +118,7 @@ int main(int argc, char** argv)
                 else if (selection == -1) {
                     isSoundSelection = false;
                     g.sound.Free();
-                    g.sound.init(selectedSoundSet);
+                    g.sound.init(g.getSelectedSoundSet());
                     g.userInput.Type = game::input::NONE;
                 }
             }
