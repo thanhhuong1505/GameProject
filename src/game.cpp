@@ -536,7 +536,7 @@ void game::renderSoundSelection()
 	LTexture startButton;
 	startButton.Load("data/image/replay.png", 1);
 	startButton.Render((SCREEN_WIDTH - startButton.getWidth()) / 2, 400);
-    
+
 	// giải phóng tài nguyên
 	shibaTex.free();
 	pinkbirdTex.free();
@@ -640,4 +640,26 @@ void game::renderText(const char* text, int x, int y, SDL_Color color)
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(surface);
     TTF_CloseFont(font); // Đóng font để giải phóng tài nguyên
+}
+
+void game::renderBackButton() {
+    SDL_Rect backButton = {100, 520, 100, 50}; // Vị trí và kích thước nút Back
+    
+
+    SDL_Color textColor = {255, 255, 255, 255}; // Màu trắng
+    renderText("Back", 145, 540, textColor); // Hiển thị chữ "Back"
+}
+
+bool game::checkBackButton() {
+    int mouseX, mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
+
+    SDL_Rect backButton = {100, 520, 100, 50}; // Vị trí nút "Back"
+    if (mouseX >= backButton.x && mouseX <= backButton.x + backButton.w &&
+        mouseY >= backButton.y && mouseY <= backButton.y + backButton.h &&
+        userInput.Type == input::PLAY) 
+    {
+        return true;
+    }
+    return false;
 }

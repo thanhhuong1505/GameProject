@@ -28,7 +28,8 @@ int main(int argc, char** argv)
     while (!g.isQuit())
     {
         frameStart = SDL_GetTicks();
-        
+        int selectedCharacter = -1; // -1 là giá trị chưa chọn
+        int selectedSoundSet = -1;  // -1 là giá trị chưa chọn
 
         if (isMainMenu)
         {
@@ -42,7 +43,12 @@ int main(int argc, char** argv)
                 {
                     
                     isMainMenu = false; // không vào chọn nhân vật, vào game luôn
-                    
+                    if (selectedCharacter != -1) {
+                        g.shiba.init(selectedCharacter, isDark); // Dùng nhân vật đã chọn
+                    }
+                    if (selectedSoundSet != -1) {
+                        g.sound.init(selectedSoundSet); // Dùng âm thanh đã chọn
+                    }
                     g.userInput.Type = game::input::NONE;
                 }
                 else if (selection == 1) // Settings
@@ -64,19 +70,26 @@ int main(int argc, char** argv)
         {
             g.takeInput();
             g.renderCharacterSelection(); // hiển thị màn hình chọn nhân vật
+            g.renderBackButton();
             SDL_Color textColor = {255, 255, 255, 255}; // Màu trắng
             g.renderText("Select Your Character", 50, 50, textColor); // Hiển thị chữ hướng dẫn
             int selection = g.checkCharacterSelection();
 
             if (g.userInput.Type == game::input::PLAY)
             {
-                if (selection >= 0) g.setSelectedCharacter(selection); // Sử dụng setter
-                if (selection == -1) // Nút Start được nhấn
-                {
-                    
+                if (g.checkBackButton()) {
                     isCharacterSelection = false;
-                    isSoundSelection = true; // chuyển sang màn hình chọn âm thanh
-                    g.shiba.init(g.getSelectedCharacter(), isDark); // Sử dụng getter
+                    isMainMenu = true; // Quay lại Main Menu
+                    g.userInput.Type = game::input::NONE;
+                } 
+                else if (selection >= 0) {
+                    selectedCharacter = selection; // Lưu nhân vật đã chọn
+                    g.setSelectedCharacter(selectedCharacter);
+                } 
+                else if (selection == -1) {
+                    isCharacterSelection = false;
+                    isSoundSelection = true;
+                    g.shiba.init(selectedCharacter, isDark);
                     g.userInput.Type = game::input::NONE;
                 }
             }
@@ -85,22 +98,27 @@ int main(int argc, char** argv)
         else if (isSoundSelection){
             g.takeInput();
             g.renderSoundSelection(); // hiển thị màn hình chọn âm thanh
+            g.renderBackButton();
             
             SDL_Color textColor = {255, 255, 255, 255}; // Màu trắng
             g.renderText("Select Sound Options", 50, 50, textColor); // Hiển thị chữ hướng dẫn
             int selection = g.checkSoundSelection();
 
             if(g.userInput.Type == game::input::PLAY){
-                if(selection >= 0){
-                    g.setSelectedSoundset(selection);
-                    g.sound.playBreath(); // phát thử âm thanh
-                }
-                if(selection == -1)  // nút start được nhấn
-                {
-                    
+                if (g.checkBackButton()) {
                     isSoundSelection = false;
-                    g.sound.Free(); // giải phóng âm thanh cũ
-                    g.sound.init(g.getSelectedSoundSet()); // tải bộ âm thanh mới
+                    isMainMenu = true; // Quay lại Main Menu
+                    g.userInput.Type = game::input::NONE;
+                } 
+                else if (selection >= 0) {
+                    selectedSoundSet = selection; // Lưu âm thanh đã chọn
+                    g.setSelectedSoundset(selectedSoundSet);
+                    g.sound.playBreath();
+                } 
+                else if (selection == -1) {
+                    isSoundSelection = false;
+                    g.sound.Free();
+                    g.sound.init(selectedSoundSet);
                     g.userInput.Type = game::input::NONE;
                 }
             }

@@ -87,6 +87,11 @@ public:
     // getter và setter cho isDark
     bool getIsDark() const { return isDark;}
     void setIsDark(bool dark) { isDark = dark;}
+
+    void renderBackButton(); // Hiển thị nút "Back"
+    bool checkBackButton();  // Kiểm tra người chơi có nhấn nút "Back" không
+
+    
 private:
     const double scaleNumberS = 0.75;
     short int bestScore;
@@ -100,5 +105,4 @@ private:
     SDL_Rect settingsButtonRect;
     SDL_Rect exitButtonRect;
 
-    
 };
