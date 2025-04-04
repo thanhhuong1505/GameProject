@@ -1,0 +1,45 @@
+Mã số Sinh viên:    24020156                   Họ và Tên: Trần Thị Thanh Hường
+Lớp Môn học: INT 2215 - 3
+1.Thông tin về game: link (github, google doc, youtube), game tham khảo (link, miêu tả) 
+Tên game: Flappy Doge
+Thể loại: Game thuộc thể loại arcade và platformer. Người chơi điều khiển một nhân vật bay qua các ống cản trở, cố gắng bay càng xa càng tốt mà không va chạm với các ống.
+Lối chơi: Người chơi sử dụng chuột hoặc phím Space để làm cho nhân vật bay lên. Khi thả ra, nhân vật sẽ rơi xuống theo trọng lực, nhấn ESC để tạm dừng.
+Link: https://github.com/thanhhuong1505/GameProject/tree/main
+Demo: youtube: https://youtu.be/gSnXf-TN5-c
+Link game tham khảo: https://github.com/Ducanger/Flappy-Doge-SDL2/tree/main
+2.Tính năng cải tiến trong game
+ Game được thiết kế với mục tiêu mang lại trải nghiệm người chơi thú vị và mượt mà. Các tính năng cải tiến trong game bao gồm:
+Chế độ chọn nhân vật: Người chơi có thể chọn nhân vật ngay từ menu cài đặt (Settings). Nhân vật có thể là các lựa chọn như Shiba, Pinkbird, Yellowbird, mỗi nhân vật có các đặc điểm âm thanh riêng.
+Chế độ chọn âm thanh: Game cho phép người chơi chọn bộ âm thanh khác nhau, như âm thanh của Shiba, Pinkbird, Yellowbird, tạo sự đa dạng và thú vị trong quá trình chơi.
+Menu chính và tùy chọn quay lại: Người chơi có thể quay lại menu chính từ các phần như chọn nhân vật, chọn âm thanh, hoặc trong quá trình game nếu cần thiết.
+3. Cấu trúc của dự án game
+ Game được tổ chức dựa trên mô hình hướng đối tượng, với nhiều lớp chức năng khác nhau. Mỗi lớp trong game có nhiệm vụ riêng biệt, giúp việc phát triển và bảo trì game trở nên dễ dàng và hiệu quả hơn.
+Cấu trúc thư mục của dự án:
+main.cpp: Chứa hàm main() là nơi khởi tạo và điều khiển toàn bộ quy trình game.
+game.h và game.cpp: Định nghĩa lớp game, chứa các chức năng điều khiển chính trong game, bao gồm menu, cài đặt, và logic chơi game.
+lib.h và lib.cpp: Các hàm tiện ích chung như xử lý hình ảnh, âm thanh, và các thành phần giao diện người dùng (UI).
+land.h và land.cpp: Quản lý và xử lý các đối tượng liên quan đến nền đất (land) trong game.
+pipe.h và pipe.cpp: Quản lý các ống (pipe) trong game, điều khiển sự chuyển động và hiển thị của chúng.
+doge.h và doge.cpp: Lớp điều khiển hành động của nhân vật chính (Shiba).
+sound.h và sound.cpp: Quản lý âm thanh trong game, cho phép lựa chọn và phát các hiệu ứng âm thanh như tiếng thở, tiếng va chạm, v.v.
+Luồng của game:
+Khởi tạo: Game khởi tạo cửa sổ SDL, bộ xử lý âm thanh và các đối tượng trong game như nhân vật, ống, nền đất.
+Menu chính: Người chơi sẽ bắt đầu ở màn hình menu chính, từ đó có thể chọn chơi game, cài đặt, hoặc thoát.
+Chế độ chơi: Người chơi chọn nhân vật và bắt đầu chơi. Game sẽ cập nhật và vẽ lại các đối tượng trong mỗi frame, điều khiển chuyển động của nhân vật và các vật thể trong game.
+Pause/Resume: Người chơi có thể tạm dừng và tiếp tục lại game bất cứ lúc nào.
+Game over: Khi nhân vật va chạm với ống hoặc rơi xuống đất, game sẽ dừng lại và hiển thị thông báo game over với các lựa chọn replay hoặc quay lại menu chính.
+4. Nguồn tham khảo và lấy dữ liệu
+ Dưới đây là các nguồn tài nguyên và cách thức lấy dữ liệu trong game:
+Âm thanh:
+Âm thanh trong game được lấy từ nguồn game có sẵn và thu thập trên google chứa tiếng thở và tiếng va chạm. Các file âm thanh này được lựa chọn tùy theo bộ nhân vật mà người chơi chọn.
+Dữ liệu âm thanh được quản lý thông qua thư viện SDL_mixer, cho phép phát và điều khiển âm thanh trong suốt quá trình chơi.
+Đồ họa:
+Đồ họa trong game bao gồm các hình ảnh nền, nhân vật, ống, và các hiệu ứng đặc biệt. Các hình ảnh này được lưu trữ dưới dạng file .png. được thu thập từ nguồn game tham khảo và google hoặc tự tạo trên web canva, figma,...
+Dữ liệu đồ họa được tải vào trong bộ nhớ khi game khởi tạo, và được hiển thị trên cửa sổ SDL thông qua các đối tượng LTexture.
+Sử dụng ChatGPT, Grok,..để cải thiện debug và tối ưu mã
+5. Các thông tin khác
+Công cụ phát triển:
+ Game được phát triển bằng ngôn ngữ C++ kết hợp với SDL2 để xử lý đồ họa, âm thanh và tương tác người dùng. Thư viện SDL_image và SDL_mixer được sử dụng để xử lý hình ảnh và âm thanh.
+Tính tương thích:
+Game có thể chạy trên các hệ điều hành Windows và Linux với điều kiện có cài đặt SDL2 và các thư viện phụ trợ cần thiết.
+
